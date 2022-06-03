@@ -26,7 +26,7 @@ public class WorkerInfo {
     @GetMapping
     public ResponseEntity<String> info() {
 
-        log.info("test.config=" + environment.getProperty("test.config"));
+        //log.info("test.config=" + environment.getProperty("test.config"));
 
         return ResponseEntity.ok("test.config=" +  environment.getProperty("test.config"));
     }
