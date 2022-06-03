@@ -4,11 +4,14 @@ import com.felipeapn.hroauth.entities.User;
 import com.felipeapn.hroauth.feignclients.UserFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserFeignClient userFeignClient;
@@ -22,4 +25,16 @@ public class UserService {
         log.info("Email found: " + email);
         return user;
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userFeignClient.findByMail(username).getBody();
+        if (user == null) {
+            log.error("Email not found: " + username);
+            throw new UsernameNotFoundException("Email not found");
+        }
+        log.info("Email found: " + username);
+        return user;
+    }
+
 }
